@@ -73,6 +73,7 @@ public class BattleSystem : MonoBehaviour
         _dialogueBox.EnableActionSelector(true);
     }
 
+    //The players turn
     public void PlayerMove()
     {
         _state = BattleState.PlayerMove;
@@ -82,6 +83,58 @@ public class BattleSystem : MonoBehaviour
 
         _dialogueBox.SetMoveNames(_playerUnit.Pokemon.Moves);
     }
+
+    //Performs the player move
+    IEnumerator PerformPlayerMove()
+    {
+        _state = BattleState.Busy;
+
+        var move = _playerUnit.Pokemon.Moves[_currentMove];
+        yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
+       
+        yield return new WaitForSeconds(1f);
+
+
+        bool isFainted = _enemyUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
+        yield return _enemyHud.UpdateHP();
+
+        if(isFainted)
+        {
+            yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} fainted");
+        }
+        else
+        {
+            StartCoroutine(EnemyMove());
+        }
+    }
+
+
+    //The enemys turn
+    IEnumerator EnemyMove()
+    {
+        _state = BattleState.EnemyMove;
+
+        var move = _enemyUnit.Pokemon.GetRandomMove();
+
+        yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} used {move.Base.Name}");
+
+        yield return new WaitForSeconds(1f);
+
+
+        bool isFainted = _playerUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
+        yield return _playerHud.UpdateHP();
+
+
+        if (isFainted)
+        {
+            yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} fainted");
+        }
+        else
+        {
+            PlayerAction();
+        }
+    }
+
 
     public void HandleActionSelection()
     {
@@ -121,7 +174,7 @@ public class BattleSystem : MonoBehaviour
 
     public void HandleMoveSelection()
     {
-        //Used for keyboard controls        //use this so that the selector doesnt move too fast
+        //Used for keyboard controls
         if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {
             if (_currentMove < _playerUnit.Pokemon.Moves.Count - 1)
@@ -152,5 +205,15 @@ public class BattleSystem : MonoBehaviour
         }
 
         _dialogueBox.UpdateMoveSelection(_currentMove, _playerUnit.Pokemon.Moves[_currentMove]);
+
+        if (Keyboard.current.zKey.wasPressedThisFrame)
+        {
+            _dialogueBox.EnableMoveSelector(false);
+            _dialogueBox.EnableDialogueText(true);
+            StartCoroutine(PerformPlayerMove());
+
+
+
+        }
     }
 }
