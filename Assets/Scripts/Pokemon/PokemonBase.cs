@@ -138,16 +138,36 @@ public class PokemonBase : ScriptableObject
         Bug,
         Rock,
         Ghost,
-        Dragon
+        Dragon,
+        Dark,
+        Steel,
+        Fairy
     }
 
     public class TypeChart
     {
         float[][] chart =
-        {  //                    NOR
-          /*Nor*/  new float [] { 1f, 1f, 1f },
-          /*Fir*/  new float [] { 1f, 1f, 1f },
-          /*Wat*/  new float [] {1f, 1f, 1f },
+        {  //                          NOR   FIR  WAT  ELE  GRA  ICE  FIG  POI  GRO  FLY  PSY  BUG  ROC  GHO  DRA  DAR  STE  FAI
+          /*Nor*/        new float [] { 1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  .5f, 0f,  1f,  1f,  .5f,  1f },
+          /*Fir*/        new float [] { 1f, .5f, .5f,  1f,  2f,  2f,  1f,  1f,  1f,  1f,  1f,  2f,  .5f, 1f, .5f,  1f,   2f,  1f },
+          /*Wat*/        new float [] { 1f,  2f, .5f,  1f, .5f,  1f,  1f,  1f,  2f,  1f,  1f,  1f,   2f, 1f, .5f,  1f,   1f,  1f },
+          /*Elec*/       new float [] { 1f,  1f,  2f, .5f, .5f,  1f,  1f,  1f,  0f,  2f,  1f,  1f,   1f, 1f, .5f,  1f,   1f,  1f },
+          /*Grass*/      new float [] { 1f, .5f,  2f,  1f, .5f,  1f,  1f, .5f,  2f, .5f,  1f, .5f,   2f, 1f, .5f,  1f,  .5f,  1f },
+          /*Ice*/        new float [] { 1f, .5f, .5f,  1f,  2f, .5f,  1f,  1f,  2f,  2f,  1f,  1f,   1f, 1f,  2f,  1f,  .5f,  1f },
+          /*Fight*/      new float [] { 2f,  1f,  1f,  1f,  1f,  2f,  1f, .5f,  1f, .5f, .5f, .5f,   2f, 0f,  1f,  2f,   2f, .5f },
+          /*Poison*/     new float [] { 1f,  1f,  1f,  1f,  2f,  1f,  1f, .5f, .5f,  1f,  1f,  1f,  .5f,.5f,  1f,  1f,   0f,  2f },
+          /*Ground*/     new float [] { 1f,  1f,  1f,  2f, .5f,  1f,  1f,  2f,  1f,  0f,  1f, .5f,   2f, 1f,  1f,  1f,   2f,  1f },
+          /*Flying*/     new float [] { 1f,  1f,  1f, .5f,  2f,  1f,  2f,  1f,  1f,  1f,  1f,  2f,  .5f, 1f,  1f,  1f,  .5f,  1f },
+          /*Psychic*/    new float [] { 1f, 1f, 1f },
+          /*Bug*/        new float [] { 1f, 1f, 1f },
+          /*Rock*/       new float [] { 1f, 1f, 1f },
+          /*Ghost*/      new float [] { 1f, 1f, 1f },
+          /*Dragon*/     new float [] { 1f, 1f, 1f },
+          /*Dark*/       new float [] { 1f, 1f, 1f },
+          /*Steel*/      new float [] { 1f, 1f, 1f },
+          /*Fairy*/      new float [] { 1f, 1f, 1f },
+
+        };
     }
 
 }
