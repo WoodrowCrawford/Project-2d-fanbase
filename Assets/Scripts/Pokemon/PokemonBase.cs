@@ -140,4 +140,14 @@ public class PokemonBase : ScriptableObject
         Ghost,
         Dragon
     }
+
+    public class TypeChart
+    {
+        float[][] chart =
+        {  //                    NOR
+          /*Nor*/  new float [] { 1f, 1f, 1f },
+          /*Fir*/  new float [] { 1f, 1f, 1f },
+          /*Wat*/  new float [] {1f, 1f, 1f },
+    }
+
 }
