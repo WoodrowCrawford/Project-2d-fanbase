@@ -9,7 +9,8 @@ public class PokemonBase : ScriptableObject
     [SerializeField]
     private string name;
 
-    [SerializeField] [TextArea]
+    [SerializeField]
+    [TextArea]
     private string description;
 
     [SerializeField]
@@ -36,13 +37,22 @@ public class PokemonBase : ScriptableObject
     [SerializeField]
     List<LearnableMove> _learnableMoves;
 
+    
+    public PokemonType Type1
+    {
+        get { return type1; }
+    }
 
+    public PokemonType Type2
+    {
+        get { return type2; }
+    }
 
     public Sprite Backsprite
     {
         get { return backSprite; }
     }
-    
+
     public Sprite FrontSprite
     {
         get { return frontSprite; }
@@ -56,7 +66,7 @@ public class PokemonBase : ScriptableObject
 
     public string Description
     {
-        get { return description; } 
+        get { return description; }
     }
 
     public int MaxHp
@@ -146,7 +156,7 @@ public class PokemonBase : ScriptableObject
 
     public class TypeChart
     {
-        float[][] chart =
+        static float[][] chart =
         {  //                          NOR   FIR  WAT  ELE  GRA  ICE  FIG  POI  GRO  FLY  PSY  BUG  ROC  GHO  DRA  DAR  STE  FAI
           /*Nor*/        new float [] { 1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  .5f, 0f,  1f,  1f,  .5f,  1f },
           /*Fir*/        new float [] { 1f, .5f, .5f,  1f,  2f,  2f,  1f,  1f,  1f,  1f,  1f,  2f,  .5f, 1f, .5f,  1f,   2f,  1f },
@@ -158,16 +168,31 @@ public class PokemonBase : ScriptableObject
           /*Poison*/     new float [] { 1f,  1f,  1f,  1f,  2f,  1f,  1f, .5f, .5f,  1f,  1f,  1f,  .5f,.5f,  1f,  1f,   0f,  2f },
           /*Ground*/     new float [] { 1f,  1f,  1f,  2f, .5f,  1f,  1f,  2f,  1f,  0f,  1f, .5f,   2f, 1f,  1f,  1f,   2f,  1f },
           /*Flying*/     new float [] { 1f,  1f,  1f, .5f,  2f,  1f,  2f,  1f,  1f,  1f,  1f,  2f,  .5f, 1f,  1f,  1f,  .5f,  1f },
-          /*Psychic*/    new float [] { 1f, 1f, 1f },
-          /*Bug*/        new float [] { 1f, 1f, 1f },
-          /*Rock*/       new float [] { 1f, 1f, 1f },
-          /*Ghost*/      new float [] { 1f, 1f, 1f },
-          /*Dragon*/     new float [] { 1f, 1f, 1f },
-          /*Dark*/       new float [] { 1f, 1f, 1f },
-          /*Steel*/      new float [] { 1f, 1f, 1f },
-          /*Fairy*/      new float [] { 1f, 1f, 1f },
+          /*Psychic*/    new float [] { 1f,  1f,  1f,  1f,  1f,  1f,  2f,  2f,  1f,  1f, .5f,  1f,   1f, 1f,  1f,  0f,  .5f,  1f },
+          /*Bug*/        new float [] { 1f, .5f,  1f,  1f,  2f,  1f, .5f, .5f,  1f, .5f,  2f,  1f,   1f,.5f,  1f,  2f,  .5f, .5f },
+          /*Rock*/       new float [] { 1f,  2f,  1f,  1f,  1f,  2f, .5f,  1f, .5f,  2f,  1f,  2f,   1f, 1f,  1f,  1f,  .5f,  1f },
+          /*Ghost*/      new float [] { 0f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  2f,  1f,   1f, 2f,  1f, .5f,   1f,  1f },
+          /*Dragon*/     new float [] { 1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,  1f,   1f, 1f,  2f,  1f,  .5f,  0f },
+          /*Dark*/       new float [] { 1f,  1f,  1f,  1f,  1f,  1f, .5f,  1f,  1f,  1f, .5f,  1f,   1f, 2f,  1f, .5f,   1f, .5f },
+          /*Steel*/      new float [] { 1f, .5f, .5f, .5f,  1f,  2f,  1f,  1f,  1f,  1f,  1f,  1f,   2f, 1f,  1f,  1f,  .5f,  2f },
+          /*Fairy*/      new float [] { 1f, .5f,  1f,  1f,  1f,  1f,  2f, .5f,  1f,  1f,  1f,  1f,   1f, 1f,  2f,  2f,  .5f,  1f },
 
         };
-    }
 
+        public static float GetEffectiveness(PokemonType attackType, PokemonType defenseType)
+        {
+            if (attackType == PokemonType.None || defenseType == PokemonType.None)
+            {
+                return 1;
+            }
+
+            int row = (int)attackType - 1;
+            int col = (int)defenseType - 1;
+
+            return chart[row][col];
+        }
+    }
 }
+
+
+

@@ -15,6 +15,6 @@ MonoBehaviour:
   _name: Ember
   _description: 
   _type: 2
-  _power: 0
-  _accuracy: 0
-  _pp: 13
+  _power: 60
+  _accuracy: 100
+  _pp: 20

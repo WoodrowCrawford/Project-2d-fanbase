@@ -59,7 +59,7 @@ public class BattleSystem : MonoBehaviour
         _enemyHud.SetData(_enemyUnit.Pokemon);
 
         yield return _dialogueBox.TypeDialoge($"A wild {_enemyUnit.Pokemon.Base.Name} appeared!");
-        yield return new WaitForSeconds(1f);
+
 
         PlayerAction();
 
@@ -80,7 +80,7 @@ public class BattleSystem : MonoBehaviour
         _dialogueBox.EnableActionSelector(false);
         _dialogueBox.EnableDialogueText(false);
         _dialogueBox.EnableMoveSelector(true);
-
+        
         _dialogueBox.SetMoveNames(_playerUnit.Pokemon.Moves);
     }
 
@@ -88,17 +88,17 @@ public class BattleSystem : MonoBehaviour
     IEnumerator PerformPlayerMove()
     {
         _state = BattleState.Busy;
-
+        
         var move = _playerUnit.Pokemon.Moves[_currentMove];
         yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
        
-        yield return new WaitForSeconds(1f);
 
 
-        bool isFainted = _enemyUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
+        var damageDetails = _enemyUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
         yield return _enemyHud.UpdateHP();
+        yield return ShowDamageDetails(damageDetails);
 
-        if(isFainted)
+        if(damageDetails.Fainted)
         {
             yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} fainted");
         }
@@ -118,14 +118,14 @@ public class BattleSystem : MonoBehaviour
 
         yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
-        yield return new WaitForSeconds(1f);
 
 
-        bool isFainted = _playerUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
+        var damageDetails = _playerUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
         yield return _playerHud.UpdateHP();
+        yield return ShowDamageDetails(damageDetails);
 
 
-        if (isFainted)
+        if (damageDetails.Fainted)
         {
             yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} fainted");
         }
@@ -135,6 +135,26 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Shows the damage details in the dialogue box
+    IEnumerator ShowDamageDetails(Pokemon.DamageDetails damageDetails)
+    {
+        //Shows crit text
+        if (damageDetails.Critical > 1f)
+        {
+            yield return _dialogueBox.TypeDialoge("A critical hit!");
+        }
+
+        //Shows super effective text
+        if (damageDetails.TypeEffectiveness > 1f)
+        {
+            yield return _dialogueBox.TypeDialoge("Its super effective!");
+        }
+        else if (damageDetails.TypeEffectiveness < 1f)
+        {
+            yield return _dialogueBox.TypeDialoge("It's not very effective...");
+        }
+
+    }
 
     public void HandleActionSelection()
     {
@@ -211,9 +231,6 @@ public class BattleSystem : MonoBehaviour
             _dialogueBox.EnableMoveSelector(false);
             _dialogueBox.EnableDialogueText(true);
             StartCoroutine(PerformPlayerMove());
-
-
-
         }
     }
 }
