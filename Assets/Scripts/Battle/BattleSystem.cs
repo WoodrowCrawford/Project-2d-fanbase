@@ -58,14 +58,16 @@ public class BattleSystem : MonoBehaviour
         _enemyUnit.SetUp();
         _enemyHud.SetData(_enemyUnit.Pokemon);
 
+        //Shows the dialogue 
         yield return _dialogueBox.TypeDialoge($"A wild {_enemyUnit.Pokemon.Base.Name} appeared!");
 
-
+        //The player action 
         PlayerAction();
 
     }
 
 
+    //Beginning of the player turn
     public void PlayerAction()
     {
         _state = BattleState.PlayerAction;
@@ -156,6 +158,7 @@ public class BattleSystem : MonoBehaviour
 
     }
 
+    //How the player can move to select different selections in the menu
     public void HandleActionSelection()
     {
         //Used for keyboard controls
