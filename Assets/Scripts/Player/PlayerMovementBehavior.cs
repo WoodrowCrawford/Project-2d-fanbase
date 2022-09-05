@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class PlayerMovementBehavior : MonoBehaviour
 
     public LayerMask longGrassLayer;
 
+    public event Action OnEncountered;
+
     public float speed = 5f;
 
     private Vector2 _input;
@@ -19,6 +22,8 @@ public class PlayerMovementBehavior : MonoBehaviour
     private bool _isMoving;
 
 
+
+    
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -57,7 +62,7 @@ public class PlayerMovementBehavior : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    public void HandleUpdate()
     {
         //Fixes diagnal input
         if(_input.x != 0)
@@ -86,9 +91,9 @@ public class PlayerMovementBehavior : MonoBehaviour
     {
         if (Physics2D.OverlapCircle(transform.position, 0.2f, longGrassLayer) != null && _isMoving)
         {
-            if (Random.Range(1, 500) <= 10) //random value can be changed
-            {
-                Debug.Log("Encounter!");
+            if (UnityEngine.Random.Range(1, 5000) <= 10) //random value can be changed
+            {   
+                OnEncountered();
             }
         }
     }

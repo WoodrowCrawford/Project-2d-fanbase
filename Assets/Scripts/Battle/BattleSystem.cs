@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy}
 
 public class BattleSystem : MonoBehaviour
 {
+
     [SerializeField]
     private BattleUnit _playerUnit;
 
@@ -23,6 +25,9 @@ public class BattleSystem : MonoBehaviour
     [SerializeField]
     private BattleDialogueBox _dialogueBox;
 
+    //An event boolean for when the battle is over
+    public event Action<bool> OnBattleOver;
+
     //Creates a battle state for the game
     private BattleState _state;
 
@@ -30,13 +35,13 @@ public class BattleSystem : MonoBehaviour
     private int _currentMove;
 
 
-    private void Start()
+    public void StartBattle()
     {
         StartCoroutine(SetUpBattle());
     }
 
 
-    private void Update()
+    public void HandleUpdate()
     {
         //Handles the action selection if the battle state is player action
         if (_state == BattleState.PlayerAction)
@@ -113,6 +118,9 @@ public class BattleSystem : MonoBehaviour
         {
             yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} fainted");
             _enemyUnit.PlayFaintAnimation();
+
+            yield return new WaitForSeconds(2f);
+            OnBattleOver(true);
         }
         else
         {
@@ -148,6 +156,9 @@ public class BattleSystem : MonoBehaviour
         {
             yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} fainted");
             _playerUnit.PlayFaintAnimation();
+
+            yield return new WaitForSeconds(2f);
+            OnBattleOver(false);
         }
         else
         {

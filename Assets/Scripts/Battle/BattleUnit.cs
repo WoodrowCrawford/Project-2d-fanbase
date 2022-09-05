@@ -42,6 +42,7 @@ public class BattleUnit : MonoBehaviour
             image.sprite = Pokemon.Base.FrontSprite;
         }
 
+        image.color = originalColor;
         PlayEnterAnimation();
     }
 
@@ -90,8 +91,6 @@ public class BattleUnit : MonoBehaviour
 
     public void PlayFaintAnimation()
     {
-       
-
         var sequence = DOTween.Sequence();
 
         //Moves the image down while also fading it with the Join function
