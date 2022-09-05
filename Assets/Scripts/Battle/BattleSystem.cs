@@ -23,11 +23,12 @@ public class BattleSystem : MonoBehaviour
     [SerializeField]
     private BattleDialogueBox _dialogueBox;
 
-
+    //Creates a battle state for the game
     private BattleState _state;
 
     private int _currentAction;
     private int _currentMove;
+
 
     private void Start()
     {
@@ -70,6 +71,7 @@ public class BattleSystem : MonoBehaviour
     //Beginning of the player turn
     public void PlayerAction()
     {
+        //Sets the battle state to be the player action
         _state = BattleState.PlayerAction;
         StartCoroutine(_dialogueBox.TypeDialoge($"What will {_playerUnit.Pokemon.Base.Name} do?"));
         _dialogueBox.EnableActionSelector(true);
@@ -89,20 +91,28 @@ public class BattleSystem : MonoBehaviour
     //Performs the player move
     IEnumerator PerformPlayerMove()
     {
+        //Sets the battle state to busy
         _state = BattleState.Busy;
         
         var move = _playerUnit.Pokemon.Moves[_currentMove];
         yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} used {move.Base.Name}");
-       
 
+        //Plays the attack animation for the player and waits for a second
+        _playerUnit.PlayAttackAnimation();
+        yield return new WaitForSeconds(1f);
 
+        
+        //Plays the hit animation for the enemy
+        _enemyUnit.PlayHitAnimation();
         var damageDetails = _enemyUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
         yield return _enemyHud.UpdateHP();
         yield return ShowDamageDetails(damageDetails);
 
+        //What happens when the enemy is fainted
         if(damageDetails.Fainted)
         {
             yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} fainted");
+            _enemyUnit.PlayFaintAnimation();
         }
         else
         {
@@ -114,22 +124,30 @@ public class BattleSystem : MonoBehaviour
     //The enemys turn
     IEnumerator EnemyMove()
     {
+        //Changes the battle state to be the enemy move
         _state = BattleState.EnemyMove;
 
+        //Selects a random move that the pokemon has
         var move = _enemyUnit.Pokemon.GetRandomMove();
 
         yield return _dialogueBox.TypeDialoge($"{_enemyUnit.Pokemon.Base.Name} used {move.Base.Name}");
 
+        //Plays the enemy attack animation and waits a second
+        _enemyUnit.PlayAttackAnimation();
+        yield return new WaitForSeconds(1f);
 
 
+        //Plays the player hit animation 
+        _playerUnit.PlayHitAnimation();
         var damageDetails = _playerUnit.Pokemon.TakeDamage(move, _playerUnit.Pokemon);
         yield return _playerHud.UpdateHP();
         yield return ShowDamageDetails(damageDetails);
 
-
+        //What happens when the player is fainted
         if (damageDetails.Fainted)
         {
             yield return _dialogueBox.TypeDialoge($"{_playerUnit.Pokemon.Base.Name} fainted");
+            _playerUnit.PlayFaintAnimation();
         }
         else
         {
